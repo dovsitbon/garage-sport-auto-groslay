@@ -1,0 +1,256 @@
+---
+import Base from '../layouts/Base.astro';
+import Statut from '../components/Statut.astro';
+import VueEclatee from '../components/VueEclatee.astro';
+import FicheDevis from '../components/FicheDevis.astro';
+import CarteFacade from '../components/CarteFacade.astro';
+import { SITE, HORAIRES, AVIS, SERVICES, fmtHeure } from '../data/site';
+
+const title = 'Garage Sport Auto, Groslay : mécanique, carrosserie, peinture';
+const description =
+  'Garage toutes marques, 24 rue de la Station à Groslay : entretien, freinage, échappement, carrosserie, peinture. 4,3/5 sur 43 avis Google. Devis en ligne.';
+
+const FAQ = [
+  { q: 'Le garage est-il ouvert le samedi ?', r: 'Non. Le Garage Sport Auto est ouvert du lundi au vendredi, de 8h30 à 12h00 et de 13h30 à 17h00. Il est fermé le samedi et le dimanche.' },
+  { q: 'Le garage prend-il toutes les marques ?', r: 'Oui. Le Garage Sport Auto à Groslay répare et entretient les véhicules de toutes marques : mécanique, carrosserie et peinture.' },
+  { q: 'Faut-il prendre rendez-vous ?', r: `Le rendez-vous est recommandé. Appelez le ${SITE.telAffiche} ou envoyez la fiche de demande de devis du site ; le garage vous rappelle.` },
+  { q: 'Comment payer ?', r: 'Le garage accepte la carte bancaire.' },
+  { q: 'Où se trouve le garage ?', r: `Au ${SITE.adresse.rue}, ${SITE.adresse.cp} ${SITE.adresse.ville}, ${SITE.repere}.` },
+];
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.r } })),
+};
+const plages = (p: [string, string][]) => p.map((x) => `${fmtHeure(x[0])}–${fmtHeure(x[1])}`).join(' et ');
+---
+<Base title={title} description={description} jsonld={[faqLd]}>
+
+  <!-- 1. Accueil -->
+  <section class="border-b-2 border-anthracite">
+    <div class="wrap grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 py-10 md:py-16 lg:py-20 items-center">
+      <div>
+        <p class="font-titre font-semibold text-orange-fonce text-[1.05rem]">{SITE.adresse.rue}, {SITE.adresse.ville}</p>
+        <h1 class="mt-3 text-[2.6rem] sm:text-[3.4rem] lg:text-[4.1rem]">Votre garage de quartier à Groslay</h1>
+        <p class="mt-5 text-[1.2rem] sm:text-[1.3rem] max-w-[34rem]">Mécanique, carrosserie, peinture, toutes marques. On regarde d'abord, et on ne change que ce qui doit l'être.</p>
+
+        <div class="mt-7 flex flex-wrap items-end gap-x-4 gap-y-2">
+          <p class="font-titre font-bold text-[3rem] leading-none">{SITE.note}<span class="text-[1.4rem] text-gris">/5</span></p>
+          <p class="pb-1 leading-tight"><span class="font-semibold">{SITE.nbAvis} avis Google</span><br /><a href="#avis" class="underline text-[.95rem]">Lire les extraits</a></p>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#devis" class="btn btn-orange">Demander un devis</a>
+          <a href={`tel:${SITE.telLien}`} class="btn btn-ligne">Appeler le {SITE.telAffiche}</a>
+        </div>
+        <Statut class="mt-6" />
+      </div>
+
+      <!-- En-tête de fiche d'intervention -->
+      <figure class="feuille mr-2.5 mb-2.5" aria-label="Fiche d'intervention du Garage Sport Auto">
+        <div class="grid grid-cols-[1fr_auto] border-b-2 border-anthracite">
+          <p class="px-5 py-3.5 font-titre font-bold text-[1.3rem]">Fiche d'intervention</p>
+          <p class="border-l-2 border-anthracite px-4 py-3.5 flex items-end gap-2"><span class="etiquette">N°</span><span class="inline-block w-16 ligne-ecrite"></span></p>
+        </div>
+        <dl class="grid grid-cols-2 border-b-2 border-anthracite">
+          <div class="px-5 py-3 border-r border-trait"><dt class="etiquette">Véhicule</dt><dd class="font-semibold">Toutes marques</dd></div>
+          <div class="px-5 py-3"><dt class="etiquette">Rendez-vous</dt><dd class="font-semibold">Recommandé</dd></div>
+          <div class="px-5 py-3 border-r border-trait border-t"><dt class="etiquette">Atelier</dt><dd class="font-semibold">Lun. au ven.</dd></div>
+          <div class="px-5 py-3 border-t border-trait"><dt class="etiquette">Paiement</dt><dd class="font-semibold">Carte bancaire</dd></div>
+        </dl>
+        <div class="px-5 py-4 border-b-2 border-anthracite">
+          <p class="etiquette mb-2">Nature de l'intervention</p>
+          <ul class="flex flex-wrap gap-x-6 gap-y-2">
+            {['Mécanique', 'Carrosserie', 'Peinture'].map((t) => (
+              <li class="flex items-center gap-2 font-semibold">
+                <span class="case"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" class="-mt-1.5 -mr-1.5 overflow-visible"><path d="M3 11 L8 16 L19 2" fill="none" stroke="#e2601b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+                {t}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="px-5 pt-4 pb-5">
+          <p class="etiquette">Constat</p>
+          <p class="constat mt-1 text-[1.15rem] font-medium">On cherche la cause, on vous explique ce qui doit être changé, et ce qui peut rester.</p>
+        </div>
+        <figcaption class="bg-anthracite text-blanc px-5 py-2.5 text-[.88rem]">{SITE.nom}, {SITE.adresse.rue}, {SITE.adresse.cp} {SITE.adresse.ville}. Tél. {SITE.telAffiche}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 2. Services -->
+  <section id="services" class="bg-papier py-16 md:py-24" aria-labelledby="t-services">
+    <div class="wrap grid lg:grid-cols-[1fr_20rem] gap-12">
+      <div>
+        <h2 id="t-services" class="text-[2.1rem] md:text-[2.8rem]">Ce qu'on fait à l'atelier</h2>
+        <p class="mt-3 max-w-[38rem]">Voitures de toutes marques. Chaque travail a son code d'opération sur la fiche. <span class="ac">[À CONFIRMER : liste exacte des prestations]</span></p>
+        <ul class="mt-8 border-t-2 border-anthracite">
+          {SERVICES.map((s) => (
+            <li class="grid grid-cols-[4rem_1fr] md:grid-cols-[5rem_15rem_1fr] gap-x-4 gap-y-1 py-4 border-b border-trait items-baseline">
+              <span class="font-titre font-bold text-orange-fonce text-[1.05rem] row-span-2 md:row-span-1">{s.code}</span>
+              <h3 class="text-[1.3rem]">{s.nom}</h3>
+              <p class="text-[1rem] text-gris md:text-anthracite">{s.detail}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="photo-vide aspect-[3/4] lg:mt-24" role="img" aria-label="Emplacement photo : l'atelier, une voiture sur le pont">
+        <span>Photo à venir : l'atelier, une voiture levée sur le pont, lumière du jour.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. On ne change que ce qui doit l'être -->
+  <section id="principe" class="sombre bg-anthracite text-blanc py-16 md:py-24" aria-labelledby="t-principe">
+    <div class="wrap">
+      <div class="grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-end">
+        <h2 id="t-principe" class="text-[2.4rem] sm:text-[3.2rem] lg:text-[4rem]">On ne change que ce qui doit l'être.</h2>
+        <div class="text-[1.1rem] text-[#e6e7e3] max-w-[36rem]">
+          <p>Un autre garage voulait changer tout l'échappement d'un client. On a regardé la ligne : l'intervention ne demandait pas de tout remplacer.</p>
+          <p class="mt-4">C'est la règle de la maison. Le diagnostic d'abord, puis un devis qui dit ce qui est usé, ce qui peut attendre et ce qui est en bon état.</p>
+        </div>
+      </div>
+
+      <div class="mt-12">
+        <VueEclatee />
+      </div>
+
+      <blockquote class="mt-14 grid md:grid-cols-[5rem_1fr] gap-4 max-w-[52rem]">
+        <span class="font-titre font-bold text-orange text-[4.5rem] leading-[.7]" aria-hidden="true">“</span>
+        <div>
+          <p class="text-[1.3rem] md:text-[1.5rem] leading-snug font-medium">{AVIS.echappement}</p>
+          <footer class="mt-3 text-[#d8dad6]">Avis Google</footer>
+        </div>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- 4. Professionnels & flottes -->
+  <section id="pros" class="py-16 md:py-24 border-b-2 border-anthracite" aria-labelledby="t-pros">
+    <div class="wrap grid md:grid-cols-[1fr_1.1fr] gap-10 lg:gap-20">
+      <div>
+        <h2 id="t-pros" class="text-[2.1rem] md:text-[2.8rem]">Professionnels et flottes d'entreprise</h2>
+        <p class="mt-4 text-[1.1rem] max-w-[32rem]">Le garage entretient aussi des véhicules de société. Un seul interlocuteur pour l'entretien et les réparations de votre parc.</p>
+        <a href={`tel:${SITE.telLien}`} class="btn btn-ligne mt-7">En parler au {SITE.telAffiche}</a>
+      </div>
+      <dl class="border-2 border-anthracite self-start">
+        <div class="grid grid-cols-[9rem_1fr] border-b border-trait"><dt class="etiquette px-4 py-3.5 bg-papier">Véhicules</dt><dd class="px-4 py-3.5">Toutes marques</dd></div>
+        <div class="grid grid-cols-[9rem_1fr] border-b border-trait"><dt class="etiquette px-4 py-3.5 bg-papier">Travaux</dt><dd class="px-4 py-3.5">Entretien, mécanique, carrosserie, peinture</dd></div>
+        <div class="grid grid-cols-[9rem_1fr] border-b border-trait"><dt class="etiquette px-4 py-3.5 bg-papier">Conditions</dt><dd class="px-4 py-3.5"><span class="ac">[À CONFIRMER : facturation, délais, prise en charge des véhicules]</span></dd></div>
+        <div class="grid grid-cols-[9rem_1fr]"><dt class="etiquette px-4 py-3.5 bg-papier">Atelier</dt><dd class="px-4 py-3.5">Lundi au vendredi, {plages(HORAIRES[0].plages)}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- 5. Demande de devis -->
+  <section id="devis" class="bg-papier py-16 md:py-24" aria-labelledby="t-devis">
+    <div class="wrap grid lg:grid-cols-[20rem_1fr] gap-10 lg:gap-16">
+      <div>
+        <h2 id="t-devis" class="text-[2.1rem] md:text-[2.8rem]">Demander un devis</h2>
+        <p class="mt-4 text-[1.1rem]">Remplissez la fiche comme au comptoir. Le garage vous rappelle pour préciser le devis et fixer le rendez-vous.</p>
+        <ul class="mt-6 space-y-3 border-l-4 border-orange pl-4">
+          <li>Rendez-vous recommandé.</li>
+          <li>Rappel aux heures d'ouverture, du lundi au vendredi.</li>
+          <li>Plus simple au téléphone ? <a href={`tel:${SITE.telLien}`} class="font-semibold underline whitespace-nowrap">{SITE.telAffiche}</a></li>
+        </ul>
+      </div>
+      <div class="mr-2.5 mb-2.5 min-w-0">
+        <FicheDevis />
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Point relais colis -->
+  <section id="colis" class="py-12 md:py-14 border-b-2 border-anthracite" aria-labelledby="t-colis">
+    <div class="wrap">
+      <div class="border-2 border-anthracite grid md:grid-cols-[auto_1fr]">
+        <div class="bg-anthracite text-blanc px-5 py-4 flex md:flex-col justify-between md:justify-center gap-3">
+          <svg viewBox="0 0 120 40" width="120" height="40" aria-hidden="true" class="flex-none">
+            {[0, 4, 6, 11, 14, 16, 21, 25, 27, 30, 35, 38, 40, 45, 49, 51, 56, 59, 62, 66, 69, 71, 76, 80, 83, 87, 90, 94, 97, 101, 104, 108, 112, 115].map((x, i) => (
+              <rect x={x} y="0" width={i % 3 === 0 ? 2.5 : 1.3} height="40" fill="#ffffff" />
+            ))}
+          </svg>
+          <span class="font-titre font-bold">Colis</span>
+        </div>
+        <div class="px-5 py-5">
+          <h2 id="t-colis" class="text-[1.6rem]">Point relais colis</h2>
+          <p class="mt-1.5">Le garage est point relais Mondial Relay. <span class="ac">[À CONFIRMER : service toujours actif]</span></p>
+          <p class="mt-1">Retrait des colis : <span class="ac">[À CONFIRMER : horaires de retrait]</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Avis -->
+  <section id="avis" class="py-16 md:py-24" aria-labelledby="t-avis">
+    <div class="wrap">
+      <div class="flex flex-wrap items-end justify-between gap-6 border-b-2 border-anthracite pb-6">
+        <h2 id="t-avis" class="text-[2.1rem] md:text-[2.8rem]">Ce qu'en disent les clients</h2>
+        <p class="flex items-end gap-3"><span class="font-titre font-bold text-[3.4rem] leading-[.85]">{SITE.note}<span class="text-[1.5rem] text-gris">/5</span></span><span class="leading-tight">sur {SITE.nbAvis} avis<br />Google</span></p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-x-14">
+        {[AVIS.david, AVIS.confiance, AVIS.delai, AVIS.echappement].map((a, i) => (
+          <figure class:list={['py-7 border-b border-trait', i === 0 && 'md:col-span-2']}>
+            <div class="border-l-4 border-orange pl-5">
+              <blockquote class:list={['leading-relaxed', i === 0 ? 'text-[1.4rem] md:text-[1.7rem] font-medium leading-snug' : 'text-[1.15rem]']}>« {a} »</blockquote>
+              <figcaption class="mt-2 text-[.92rem] text-gris">Avis Google</figcaption>
+            </div>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Infos pratiques -->
+  <section id="infos" class="bg-papier py-16 md:py-24 border-t-2 border-anthracite" aria-labelledby="t-infos">
+    <div class="wrap">
+      <h2 id="t-infos" class="text-[2.1rem] md:text-[2.8rem]">Horaires et accès</h2>
+      <div class="mt-10 grid lg:grid-cols-[1fr_1.15fr] gap-10 lg:gap-14">
+        <div>
+          <Statut class="mb-4" />
+          <table class="w-full border-2 border-anthracite bg-blanc text-[1rem]">
+            <caption class="sr-only">Horaires d'ouverture du Garage Sport Auto</caption>
+            <tbody>
+              {HORAIRES.map((h) => (
+                <tr data-jour={h.jour} class="border-b border-trait last:border-0 aria-[current=date]:bg-[#fdeee5] aria-[current=date]:font-semibold">
+                  <th scope="row" class="text-left font-titre font-semibold px-4 py-2.5 w-[6.5rem] md:w-[8.5rem]">{h.nom}</th>
+                  <td class="px-4 py-2.5">{h.plages.length ? h.plages.map((p) => `${fmtHeure(p[0])}–${fmtHeure(p[1])}`).join(' et ') : 'Fermé'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="mt-2 text-[.92rem] text-gris">Fermé de 12h00 à 13h30 pour la pause de midi.</p>
+
+          <address class="not-italic mt-8 text-[1.1rem] leading-relaxed">
+            <span class="font-titre font-bold text-[1.3rem]">{SITE.nom}</span><br />
+            {SITE.adresse.rue}, {SITE.adresse.cp} {SITE.adresse.ville}<br />
+            <span class="text-gris">{SITE.repere[0].toUpperCase() + SITE.repere.slice(1)}</span><br />
+            <a href={`tel:${SITE.telLien}`} class="inline-flex items-center min-h-[44px] font-semibold underline">{SITE.telAffiche}</a>
+          </address>
+          <p class="mt-4">Paiement par carte bancaire. Rendez-vous recommandé.</p>
+          <p class="mt-4 text-[.98rem]">Pratique depuis Groslay et les communes voisines : {SITE.voisines.join(', ')}.</p>
+          <p class="mt-4 text-[.98rem]">Le garage a aussi une fiche sur <a href={SITE.idgarages} class="underline font-semibold" target="_blank" rel="noopener">idGarages</a>.</p>
+        </div>
+        <div class="min-w-0">
+          <CarteFacade />
+          <div class="photo-vide aspect-[16/9] mt-8" role="img" aria-label="Emplacement photo : la façade du garage depuis la rue de la Station">
+            <span>Photo à venir : la façade et l'entrée de l'atelier, vues depuis la rue de la Station.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-16 border-t-2 border-anthracite pt-10 grid lg:grid-cols-[20rem_1fr] gap-8">
+        <h2 class="text-[1.8rem]">Questions fréquentes</h2>
+        <dl class="divide-y divide-trait border-y border-trait">
+          {FAQ.map((f) => (
+            <div class="py-4 grid md:grid-cols-[17rem_1fr] gap-x-6 gap-y-1">
+              <dt class="font-titre font-semibold text-[1.1rem]">{f.q}</dt>
+              <dd>{f.r}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+</Base>

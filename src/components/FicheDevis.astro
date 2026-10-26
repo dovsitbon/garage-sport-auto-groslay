@@ -1,0 +1,182 @@
+---
+// Formulaire de devis présenté comme une fiche d'intervention d'atelier (envoi Web3Forms).
+import { SITE } from '../data/site';
+const jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+---
+<form class="feuille fiche-devis" action="https://api.web3forms.com/submit" method="POST" novalidate data-devis>
+  <input type="hidden" name="access_key" value={SITE.web3formsKey} />
+  <input type="hidden" name="subject" value="Demande de devis depuis le site Garage Sport Auto" />
+  <input type="hidden" name="from_name" value="Site Garage Sport Auto" />
+  <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <div class="grid grid-cols-[1fr_auto] items-stretch border-b-2 border-anthracite">
+    <div class="px-4 sm:px-6 py-4">
+      <p class="font-titre font-bold text-[1.35rem] leading-tight">Fiche d'intervention</p>
+      <p class="text-[.92rem] text-gris">{SITE.nom}, {SITE.adresse.rue}, {SITE.adresse.ville}. Tél. {SITE.telAffiche}</p>
+    </div>
+    <div class="border-l-2 border-anthracite px-4 py-4 flex flex-col justify-center bg-papier">
+      <span class="etiquette">Exemplaire</span>
+      <span class="font-titre font-bold">client</span>
+    </div>
+  </div>
+
+  <div class="px-4 sm:px-6 pt-5 pb-2">
+    <p class="font-titre font-bold text-[1.05rem]">1. Le véhicule</p>
+  </div>
+  <div class="grid sm:grid-cols-2 gap-x-6 gap-y-4 px-4 sm:px-6">
+    <div class="sm:col-span-2">
+      <label for="immat" class="etiquette block mb-1">Immatriculation</label>
+      <div class="plaque max-w-[19rem]">
+        <input id="immat" name="Immatriculation" class="w-full min-h-[50px] px-3 font-titre font-bold text-[1.35rem] tracking-[.08em] uppercase bg-transparent outline-none placeholder:text-trait" placeholder="AB-123-CD" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" aria-describedby="immat-aide" />
+      </div>
+      <p id="immat-aide" class="text-[.85rem] text-gris mt-1">Facultatif, mais utile pour trouver les bonnes pièces.</p>
+    </div>
+    <div>
+      <label for="marque" class="etiquette block">Marque *</label>
+      <input id="marque" name="Marque" class="champ" required autocomplete="off" placeholder="Peugeot, Renault, Toyota…" aria-describedby="marque-err" />
+      <p id="marque-err" class="err" hidden>Indiquez la marque du véhicule.</p>
+    </div>
+    <div>
+      <label for="modele" class="etiquette block">Modèle *</label>
+      <input id="modele" name="Modèle" class="champ" required autocomplete="off" placeholder="208, Clio IV, Yaris…" aria-describedby="modele-err" />
+      <p id="modele-err" class="err" hidden>Indiquez le modèle.</p>
+    </div>
+    <div>
+      <label for="km" class="etiquette block">Kilométrage</label>
+      <div class="flex items-end gap-2">
+        <input id="km" name="Kilométrage" class="champ" inputmode="numeric" autocomplete="off" placeholder="120 000…" />
+        <span class="pb-3 font-semibold">km</span>
+      </div>
+    </div>
+    <fieldset>
+      <legend class="etiquette mb-1.5">Nature de l'intervention</legend>
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
+        {['Mécanique', 'Carrosserie', 'Peinture'].map((t) => (
+          <label class="inline-flex items-center gap-2 min-h-[44px] cursor-pointer">
+            <input type="checkbox" name="Nature" value={t} class="w-5 h-5 accent-[#2a2d31]" />{t}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="px-4 sm:px-6 pt-7 pb-2 border-t border-dashed border-trait mt-6">
+    <p class="font-titre font-bold text-[1.05rem]">2. Le constat</p>
+  </div>
+  <div class="px-4 sm:px-6">
+    <label for="probleme" class="etiquette block">Problème constaté *</label>
+    <textarea id="probleme" name="Problème constaté" rows="5" class="champ lignes resize-y" required placeholder="Ce que vous entendez, voyez ou sentez, et depuis quand. Un bruit au freinage, un voyant, un choc sur l'aile…" aria-describedby="probleme-err"></textarea>
+    <p id="probleme-err" class="err" hidden>Décrivez le problème en quelques mots.</p>
+    <p class="text-[.88rem] text-gris mt-2">Des photos aident : <span class="ac">[À CONFIRMER : adresse e-mail ou mobile du garage pour envoyer les photos]</span>, ou montrez-les sur place.</p>
+  </div>
+
+  <div class="px-4 sm:px-6 pt-7 pb-2 border-t border-dashed border-trait mt-6">
+    <p class="font-titre font-bold text-[1.05rem]">3. Pour vous joindre</p>
+  </div>
+  <div class="grid sm:grid-cols-2 gap-x-6 gap-y-4 px-4 sm:px-6">
+    <div>
+      <label for="nom" class="etiquette block">Nom</label>
+      <input id="nom" name="Nom" class="champ" autocomplete="name" />
+    </div>
+    <div>
+      <label for="tel" class="etiquette block">Téléphone *</label>
+      <input id="tel" name="Téléphone" type="tel" class="champ" required autocomplete="tel" inputmode="tel" pattern="[0-9+ .\-]{10,}" placeholder="06 12 34 56 78" aria-describedby="tel-err" />
+      <p id="tel-err" class="err" hidden>Indiquez un numéro à 10 chiffres pour qu'on vous rappelle.</p>
+    </div>
+    <div>
+      <label for="jour" class="etiquette block">Jour souhaité</label>
+      <select id="jour" name="Jour souhaité" class="champ">
+        <option value="Peu importe">Peu importe</option>
+        {jours.map((j) => <option>{j}</option>)}
+      </select>
+    </div>
+    <fieldset>
+      <legend class="etiquette mb-1.5">Créneau souhaité</legend>
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
+        <label class="inline-flex items-center gap-2 min-h-[44px] cursor-pointer"><input type="radio" name="Créneau" value="Matin, 8h30–12h00" class="w-5 h-5 accent-[#2a2d31]" />Matin <span class="text-gris text-[.9rem]">8h30–12h</span></label>
+        <label class="inline-flex items-center gap-2 min-h-[44px] cursor-pointer"><input type="radio" name="Créneau" value="Après-midi, 13h30–17h00" class="w-5 h-5 accent-[#2a2d31]" />Après-midi <span class="text-gris text-[.9rem]">13h30–17h</span></label>
+      </div>
+    </fieldset>
+    <p class="sm:col-span-2 text-[.88rem] text-gris -mt-1">Le garage est fermé le samedi et le dimanche. Le rendez-vous est confirmé par téléphone.</p>
+  </div>
+
+  <div class="mx-4 sm:mx-6 mt-6 pt-5 border-t-2 border-anthracite">
+    <label class="flex items-start gap-3 cursor-pointer">
+      <input type="checkbox" name="Consentement RGPD" value="Oui" required class="mt-1 w-5 h-5 flex-none accent-[#2a2d31]" aria-describedby="rgpd-err" />
+      <span class="text-[.95rem]">J'accepte que le Garage Sport Auto utilise ces informations pour me recontacter au sujet de ma demande de devis. Rien d'autre. <a href="/confidentialite/" class="underline">Politique de confidentialité</a> *</span>
+    </label>
+    <p id="rgpd-err" class="err" hidden>Cochez la case pour que nous puissions vous répondre.</p>
+  </div>
+
+  <div class="px-4 sm:px-6 py-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+    <button type="submit" class="btn btn-orange">Envoyer la fiche</button>
+    <p class="text-[.9rem] text-gris">* champs obligatoires. Pressé ? <a href={`tel:${SITE.telLien}`} class="underline font-semibold text-anthracite">{SITE.telAffiche}</a></p>
+  </div>
+  <div class="px-4 sm:px-6 pb-6 empty:hidden" role="status" aria-live="polite" data-message></div>
+</form>
+
+<style>
+  .err { color: #b3261e; font-size: .88rem; font-weight: 600; margin-top: .25rem; }
+  .lignes { background-image: repeating-linear-gradient(to bottom, transparent 0 calc(1.7rem - 1px), var(--color-trait) calc(1.7rem - 1px) 1.7rem); background-position: 0 .55rem; line-height: 1.7rem; }
+  select.champ { appearance: auto; }
+  :global(.msg) { padding: .85rem 1rem; border-left: 5px solid; font-weight: 600; }
+  :global(.msg-ok) { border-color: #2e7d4f; background: #eef6f0; }
+  :global(.msg-err) { border-color: #b3261e; background: #fdf0ee; }
+</style>
+
+<script>
+  import { SITE } from '../data/site';
+  const form = document.querySelector<HTMLFormElement>('[data-devis]');
+  if (form) {
+    const zone = form.querySelector<HTMLElement>('[data-message]')!;
+    const bouton = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    const dire = (texte: string, ok: boolean) => {
+      zone.innerHTML = '';
+      const p = document.createElement('p');
+      p.className = `msg ${ok ? 'msg-ok' : 'msg-err'}`;
+      p.textContent = texte;
+      zone.append(p);
+    };
+    const verifier = () => {
+      let premier: HTMLInputElement | null = null;
+      form.querySelectorAll<HTMLInputElement>('[required]').forEach((el) => {
+        const err = el.getAttribute('aria-describedby')?.split(' ').map((id) => document.getElementById(id)).find((x) => x?.classList.contains('err'));
+        const valide = el.type === 'checkbox' ? el.checked : el.value.trim() !== '' && el.checkValidity();
+        el.setAttribute('aria-invalid', valide ? 'false' : 'true');
+        if (err) err.hidden = valide;
+        if (!valide && !premier) premier = el;
+      });
+      if (premier) (premier as HTMLInputElement).focus();
+      return !premier;
+    };
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!verifier()) { dire('Il manque des informations : les champs à compléter sont signalés en rouge.', false); return; }
+      if (SITE.web3formsKey.includes('CONFIRMER')) {
+        dire(`L'envoi en ligne n'est pas encore activé. Appelez le garage au ${SITE.telAffiche}, du lundi au vendredi.`, false);
+        return;
+      }
+      bouton.disabled = true;
+      bouton.textContent = 'Envoi en cours…';
+      try {
+        const r = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) });
+        const j = await r.json();
+        if (!r.ok || !j.success) throw new Error();
+        form.reset();
+        dire('Fiche envoyée. Le garage vous rappelle pour le devis et le rendez-vous.', true);
+      } catch {
+        dire(`La fiche n'est pas partie (problème de connexion ou de service). Réessayez, ou appelez le ${SITE.telAffiche}.`, false);
+      } finally {
+        bouton.disabled = false;
+        bouton.textContent = 'Envoyer la fiche';
+      }
+    });
+    form.addEventListener('input', (e) => {
+      const el = e.target as HTMLInputElement;
+      if (el.getAttribute('aria-invalid') === 'true') {
+        const ok = el.type === 'checkbox' ? el.checked : el.value.trim() !== '' && el.checkValidity();
+        if (ok) { el.setAttribute('aria-invalid', 'false'); el.getAttribute('aria-describedby')?.split(' ').forEach((id) => { const x = document.getElementById(id); if (x?.classList.contains('err')) x.hidden = true; }); }
+      }
+    });
+  }
+</script>

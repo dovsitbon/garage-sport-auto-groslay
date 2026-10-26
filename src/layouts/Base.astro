@@ -1,0 +1,122 @@
+---
+import '../styles/global.css';
+import Entete from '../components/Entete.astro';
+import Pied from '../components/Pied.astro';
+import BarreMobile from '../components/BarreMobile.astro';
+import { SITE, HORAIRES } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  jsonld?: object[];
+  noindex?: boolean;
+}
+const { title, description, jsonld = [], noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = new URL('/og.png', Astro.site);
+
+const jours = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const garage = {
+  '@context': 'https://schema.org',
+  '@type': 'AutoRepair',
+  '@id': new URL('/#garage', Astro.site).href,
+  name: SITE.nom,
+  url: new URL('/', Astro.site).href,
+  telephone: SITE.telLien,
+  image: og.href,
+  logo: new URL('/apple-touch-icon.png', Astro.site).href,
+  description: 'Garage indépendant toutes marques à Groslay : entretien, mécanique, freinage, échappement, embrayage, carrosserie, peinture.',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: SITE.adresse.rue,
+    postalCode: SITE.adresse.cp,
+    addressLocality: SITE.adresse.ville,
+    addressRegion: SITE.adresse.region,
+    addressCountry: SITE.adresse.pays,
+  },
+  hasMap: SITE.itineraire,
+  areaServed: [SITE.adresse.ville, ...SITE.voisines].map((n) => ({ '@type': 'City', name: n })),
+  openingHoursSpecification: [0, 1].map((i) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: HORAIRES.filter((h) => h.plages[i]).map((h) => jours[h.jour]),
+    opens: HORAIRES.find((h) => h.plages[i])!.plages[i][0],
+    closes: HORAIRES.find((h) => h.plages[i])!.plages[i][1],
+  })),
+  paymentAccepted: SITE.paiement,
+  currenciesAccepted: 'EUR',
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: SITE.noteNum, bestRating: 5, reviewCount: SITE.nbAvis },
+  sameAs: [SITE.idgarages],
+};
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#2a2d31" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Garage Sport Auto, Groslay" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Garage Sport Auto, 24 rue de la Station à Groslay : mécanique, carrosserie, peinture" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <script type="application/ld+json" set:html={JSON.stringify(garage)} />
+    {jsonld.map((j) => <script type="application/ld+json" set:html={JSON.stringify(j)} />)}
+  </head>
+  <body class="min-h-dvh flex flex-col pb-[4.75rem] md:pb-0">
+    <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-blanc focus:px-4 focus:py-3 focus:font-semibold">Aller au contenu</a>
+    <Entete />
+    <main id="contenu" class="flex-1">
+      <slot />
+    </main>
+    <Pied />
+    <BarreMobile />
+    <script is:inline define:vars={{ horaires: HORAIRES }}>
+      (function () {
+        try {
+          var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Paris', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+          var get = function (t) { return (parts.find(function (p) { return p.type === t; }) || {}).value; };
+          var j = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[get('weekday')];
+          var min = parseInt(get('hour'), 10) * 60 + parseInt(get('minute'), 10);
+          var m = function (h) { var a = h.split(':'); return +a[0] * 60 + +a[1]; };
+          var f = function (h) { return h.replace(/^0/, '').replace(':', 'h'); };
+          var jour = function (n) { return horaires.find(function (h) { return h.jour === n; }); };
+          var auj = jour(j), etat = 'ferme', texte = '';
+          var plages = auj ? auj.plages : [];
+          for (var i = 0; i < plages.length; i++) {
+            if (min >= m(plages[i][0]) && min < m(plages[i][1])) { etat = 'ouvert'; texte = 'Ouvert maintenant, jusqu’à ' + f(plages[i][1]); }
+          }
+          if (etat !== 'ouvert') {
+            var suite = plages.find(function (p) { return m(p[0]) > min; });
+            if (suite && plages.some(function (p) { return m(p[1]) <= min; })) { etat = 'pause'; texte = 'Pause de midi, réouverture à ' + f(suite[0]); }
+            else if (suite) texte = 'Fermé, ouvre à ' + f(suite[0]);
+            else {
+              for (var d = 1; d <= 7; d++) {
+                var n = jour((j + d) % 7);
+                if (n && n.plages.length) { texte = 'Fermé, ouvre ' + (d === 1 ? 'demain' : n.nom.toLowerCase()) + ' à ' + f(n.plages[0][0]); break; }
+              }
+            }
+          }
+          document.querySelectorAll('[data-statut]').forEach(function (el) {
+            el.dataset.etat = etat;
+            var t = el.querySelector('[data-statut-texte]');
+            if (t) t.textContent = texte;
+          });
+          document.querySelectorAll('[data-jour="' + j + '"]').forEach(function (el) { el.setAttribute('aria-current', 'date'); });
+        } catch (e) {}
+      })();
+    </script>
+  </body>
+</html>

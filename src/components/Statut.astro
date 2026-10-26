@@ -1,0 +1,15 @@
+---
+// Statut Ouvert / Pause / Fermé, calculé dans Base.astro (fuseau Europe/Paris).
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+---
+<p class:list={['statut inline-flex items-center gap-2.5 font-semibold', cls]} data-statut data-etat="inconnu" aria-live="polite">
+  <span class="pastille" aria-hidden="true"></span>
+  <span data-statut-texte>Lundi au vendredi, 8h30–12h00 et 13h30–17h00</span>
+</p>
+<style>
+  .pastille { width: .75rem; height: .75rem; border-radius: 50%; border: 2px solid currentColor; flex: none; }
+  [data-etat='ouvert'] .pastille { background: #2e7d4f; border-color: #2e7d4f; box-shadow: 0 0 0 3px color-mix(in srgb, #2e7d4f 25%, transparent); }
+  [data-etat='pause'] .pastille { background: var(--color-orange); border-color: var(--color-orange); }
+  [data-etat='ferme'] .pastille { background: transparent; }
+</style>

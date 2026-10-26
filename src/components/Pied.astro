@@ -1,0 +1,39 @@
+---
+import Logo from './Logo.astro';
+import { SITE, HORAIRES, fmtHeure } from '../data/site';
+const annee = new Date().getFullYear();
+const ouverts = HORAIRES.find((h) => h.plages.length)!;
+---
+<footer class="sombre bg-anthracite text-blanc">
+  <div class="wrap py-14 grid gap-10 md:grid-cols-[1.3fr_1fr_1fr]">
+    <div>
+      <Logo clair />
+      <p class="mt-5 max-w-sm text-[#d8dad6]">Garage indépendant toutes marques : mécanique, carrosserie, peinture.</p>
+    </div>
+    <div>
+      <h2 class="font-titre text-lg">Adresse et téléphone</h2>
+      <address class="not-italic mt-3 leading-relaxed">
+        {SITE.nom}<br />
+        {SITE.adresse.rue}<br />
+        {SITE.adresse.cp} {SITE.adresse.ville}<br />
+        <a href={`tel:${SITE.telLien}`} class="inline-flex items-center min-h-[44px] font-semibold">{SITE.telAffiche}</a>
+      </address>
+    </div>
+    <div>
+      <h2 class="font-titre text-lg">Horaires</h2>
+      <p class="mt-3 leading-relaxed">
+        Lundi au vendredi<br />
+        {ouverts.plages.map((p) => `${fmtHeure(p[0])}–${fmtHeure(p[1])}`).join(' et ')}<br />
+        Samedi et dimanche : fermé
+      </p>
+    </div>
+  </div>
+  <div class="border-t border-[#4a4e54]">
+    <div class="wrap py-5 flex flex-wrap gap-x-6 gap-y-1 text-[.95rem] text-[#d8dad6]">
+      <p class="py-2.5">© {annee} {SITE.nom}</p>
+      <a href="/mentions-legales/" class="inline-flex items-center min-h-[44px]">Mentions légales</a>
+      <a href="/confidentialite/" class="inline-flex items-center min-h-[44px]">Confidentialité</a>
+      <a href={SITE.idgarages} class="inline-flex items-center min-h-[44px]" rel="noopener" target="_blank">Fiche idGarages</a>
+    </div>
+  </div>
+</footer>

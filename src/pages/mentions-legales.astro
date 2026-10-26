@@ -1,0 +1,32 @@
+---
+import PageTexte from '../components/PageTexte.astro';
+import { SITE } from '../data/site';
+---
+<PageTexte title="Mentions légales | Garage Sport Auto, Groslay" description="Mentions légales du site du Garage Sport Auto, 24 rue de la Station à Groslay : éditeur, hébergeur, propriété intellectuelle." titre="Mentions légales">
+  <h2>Éditeur du site</h2>
+  <p>
+    {SITE.nom}<br />
+    {SITE.adresse.rue}, {SITE.adresse.cp} {SITE.adresse.ville}<br />
+    Téléphone : <a href={`tel:${SITE.telLien}`}>{SITE.telAffiche}</a>
+  </p>
+  <ul>
+    <li>Société exploitante (dénomination) : <span class="ac">[À CONFIRMER]</span></li>
+    <li>Forme juridique et capital : <span class="ac">[À CONFIRMER]</span></li>
+    <li>SIREN / SIRET : <span class="ac">[À CONFIRMER]</span></li>
+    <li>RCS et numéro de TVA intracommunautaire : <span class="ac">[À CONFIRMER]</span></li>
+    <li>Directeur de la publication : <span class="ac">[À CONFIRMER]</span></li>
+    <li>Adresse e-mail de contact : <span class="ac">[À CONFIRMER]</span></li>
+  </ul>
+
+  <h2>Hébergeur</h2>
+  <p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis. Site : <a href="https://vercel.com" rel="noopener">vercel.com</a></p>
+
+  <h2>Propriété intellectuelle</h2>
+  <p>Les textes, le dessin de la vue éclatée et la mise en page de ce site appartiennent à leur auteur. Toute reproduction sans accord préalable est interdite.</p>
+
+  <h2>Avis clients</h2>
+  <p>Les extraits d'avis cités proviennent d'avis publics laissés sur Google. La note de 4,3/5 sur 43 avis est celle affichée sur la fiche Google du garage à la date de mise en ligne.</p>
+
+  <h2>Données personnelles et cookies</h2>
+  <p>Ce site ne dépose aucun cookie et n'utilise aucun outil de mesure d'audience. Pour le formulaire de devis, voir la <a href="/confidentialite/">politique de confidentialité</a>.</p>
+</PageTexte>

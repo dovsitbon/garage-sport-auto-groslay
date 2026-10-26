@@ -1,0 +1,16 @@
+---
+// Logotype : « Sport Auto » en Chakra Petch, carré orange façon repère de plan.
+interface Props { clair?: boolean }
+const { clair = false } = Astro.props;
+---
+<span class:list={['inline-flex items-center gap-2.5 leading-none', clair ? 'text-blanc' : 'text-anthracite']}>
+  <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" class="flex-none">
+    <rect width="30" height="30" fill="#e2601b" />
+    <circle cx="15" cy="15" r="8" fill="none" stroke="#1a1c1f" stroke-width="3" />
+    <path d="M15 2v6M15 22v6M2 15h6M22 15h6" stroke="#1a1c1f" stroke-width="3" />
+  </svg>
+  <span class="flex flex-col whitespace-nowrap" translate="no">
+    <span class="font-titre text-[.72rem] font-semibold tracking-[.08em]">Garage</span>
+    <span class="font-titre text-[1.3rem] font-bold tracking-[-.01em]">Sport Auto</span>
+  </span>
+</span>

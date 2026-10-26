@@ -1,0 +1,24 @@
+---
+import PageTexte from '../components/PageTexte.astro';
+import { SITE } from '../data/site';
+---
+<PageTexte title="Politique de confidentialité | Garage Sport Auto, Groslay" description="Comment le Garage Sport Auto à Groslay utilise les informations envoyées par le formulaire de demande de devis. Aucun cookie, aucun traceur." titre="Politique de confidentialité">
+  <h2>Ce que nous recevons</h2>
+  <p>Quand vous envoyez la fiche de demande de devis, nous recevons les informations que vous y avez écrites : immatriculation, marque, modèle, kilométrage, problème constaté, nature de l'intervention, nom, téléphone, jour et créneau souhaités.</p>
+
+  <h2>Pourquoi</h2>
+  <p>Uniquement pour vous rappeler, établir le devis et fixer un rendez-vous. Ces informations ne sont ni vendues ni utilisées pour de la publicité. La base légale est votre consentement, donné en cochant la case du formulaire.</p>
+
+  <h2>Qui les traite</h2>
+  <p>Responsable du traitement : {SITE.nom}, {SITE.adresse.rue}, {SITE.adresse.cp} {SITE.adresse.ville} (société exploitante <span class="ac">[À CONFIRMER]</span>).</p>
+  <p>Le formulaire est transmis par le service Web3Forms, qui relaie le message vers la boîte e-mail du garage. Le site est hébergé par Vercel Inc.</p>
+
+  <h2>Combien de temps</h2>
+  <p>Durée de conservation des demandes : <span class="ac">[À CONFIRMER]</span>.</p>
+
+  <h2>Vos droits</h2>
+  <p>Vous pouvez demander l'accès, la rectification ou la suppression de vos informations, ou retirer votre consentement, en appelant le <a href={`tel:${SITE.telLien}`}>{SITE.telAffiche}</a> ou par écrit au {SITE.adresse.rue}, {SITE.adresse.cp} {SITE.adresse.ville}. Vous pouvez aussi saisir la CNIL (<a href="https://www.cnil.fr" rel="noopener">cnil.fr</a>).</p>
+
+  <h2>Cookies</h2>
+  <p>Aucun cookie, aucun traceur, aucune mesure d'audience. La carte Google ne se charge que si vous cliquez sur « Afficher la carte Google » ; Google peut alors déposer ses propres cookies.</p>
+</PageTexte>

@@ -1,0 +1,42 @@
+---
+import { SITE } from '../data/site';
+---
+<div class="relative min-w-0 w-full aspect-[4/3] min-h-[300px] border-2 border-anthracite overflow-hidden bg-papier" data-carte>
+  <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect width="400" height="300" fill="#f2f2ee" />
+    <g stroke="#3d6e9e" stroke-opacity=".18" stroke-width="1">
+      {Array.from({ length: 17 }, (_, i) => <path d={`M${i * 25} 0V300`} />)}
+      {Array.from({ length: 13 }, (_, i) => <path d={`M0 ${i * 25}H400`} />)}
+    </g>
+    <!-- voie ferrée (schématique) -->
+    <path d="M-10 70 L 420 40" stroke="#2a2d31" stroke-width="3" fill="none" />
+    <path d="M-10 70 L 420 40" stroke="#ffffff" stroke-width="1.6" stroke-dasharray="7 7" fill="none" />
+    <!-- rue (schématique) -->
+    <path d="M60 320 C 120 230, 170 170, 230 60" stroke="#ffffff" stroke-width="20" fill="none" />
+    <path d="M60 320 C 120 230, 170 170, 230 60" stroke="#3d6e9e" stroke-width="1.5" fill="none" />
+    <text x="170" y="215" font-family="Red Hat Text Variable, sans-serif" font-size="13" fill="#2a2d31" transform="rotate(-58 170 215)">rue de la Station</text>
+    <rect x="182" y="138" width="22" height="22" fill="#e2601b" />
+    <circle cx="193" cy="149" r="5" fill="none" stroke="#1a1c1f" stroke-width="2.5" />
+  </svg>
+  <p class="absolute left-3 top-3 bg-blanc px-2.5 py-1 text-[.88rem] border-2 border-anthracite font-semibold">{SITE.adresse.rue}, {SITE.adresse.cp} {SITE.adresse.ville}</p>
+  <div class="absolute left-3 right-3 bottom-3 flex flex-wrap gap-2">
+    <button type="button" class="btn btn-ligne bg-blanc" data-charger-carte>Afficher la carte Google</button>
+    <a href={SITE.itineraire} class="btn btn-orange" target="_blank" rel="noopener">Itinéraire</a>
+  </div>
+</div>
+<p class="mt-2 text-[.88rem] text-gris">Plan schématique. La carte Google se charge seulement si vous cliquez.</p>
+<script>
+  import { SITE } from '../data/site';
+  document.querySelectorAll<HTMLElement>('[data-carte]').forEach((box) => {
+    box.querySelector('[data-charger-carte]')?.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = SITE.carte;
+      f.title = 'Carte : Garage Sport Auto, 24 rue de la Station, Groslay';
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      f.className = 'absolute inset-0 w-full h-full border-0';
+      box.replaceChildren(f);
+      f.focus();
+    });
+  });
+</script>

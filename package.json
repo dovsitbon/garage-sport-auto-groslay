@@ -1,0 +1,24 @@
+{
+  "name": "garage-sport-auto-groslay",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --port 4416",
+    "build": "astro build",
+    "preview": "astro preview --port 4416",
+    "captures": "node scripts/captures.mjs",
+    "og": "node scripts/og.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/red-hat-text": "^5.2.0",
+    "@fontsource/chakra-petch": "^5.2.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.4.2",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1"
+  }
+}

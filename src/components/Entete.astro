@@ -1,0 +1,27 @@
+---
+import Logo from './Logo.astro';
+import { SITE } from '../data/site';
+const liens = [
+  ['Services', '/#services'],
+  ['Notre principe', '/#principe'],
+  ['Pros', '/#pros'],
+  ['Avis', '/#avis'],
+  ['Horaires et accès', '/#infos'],
+];
+---
+<header class="sticky top-0 z-40 bg-blanc border-b-2 border-anthracite">
+  <div class="wrap flex items-center justify-between gap-4 h-[4.25rem]">
+    <a href="/" class="flex items-center min-h-[44px]" aria-label="Garage Sport Auto, accueil"><Logo /></a>
+    <nav aria-label="Navigation principale" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {liens.map(([t, h]) => (
+          <li><a href={h} class="inline-flex items-center min-h-[44px] px-3 font-titre font-semibold no-underline hover:text-orange-fonce hover:underline">{t}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href={`tel:${SITE.telLien}`} class="hidden md:inline-flex btn btn-ligne !min-h-[44px] !py-2">{SITE.telAffiche}</a>
+      <a href="/#devis" class="btn btn-orange !min-h-[44px] !py-2 !px-4 whitespace-nowrap"><span class="sm:hidden">Devis</span><span class="hidden sm:inline">Demander un devis</span></a>
+    </div>
+  </div>
+</header>
